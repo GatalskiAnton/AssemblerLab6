@@ -4,10 +4,19 @@ extern "C"
 {
 	void __fastcall CreateVectorB(unsigned int A[][4], int N,  int M, int* B);
 //	int __stdcall FindSaddlePoints(int matrix[][m], int n, int m, int* results);
+	 void __fastcall IntToOct(int, char*);
+
 }
 
 int main()
 {
+	int numb = 83;
+	char str[12];
+	str[11] = 0;
+
+	IntToOct(numb, str);
+	std::cout << "IntToOct = " << str << '\n';
+	int a = 11219473485;
 	const int n = 3, m = 4;
 	unsigned int matrix[n][m] = {
 		{1,0,0,7},
