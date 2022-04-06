@@ -1,87 +1,56 @@
 ﻿#include <iostream>
 
-extern "C"
+const int N = 3;
+const int M = 4;
+
+extern "C" 
 {
-	void __fastcall CreateVectorB(unsigned int A[][4], int N,  int M, int* B);
-//	int __stdcall FindSaddlePoints(int matrix[][m], int n, int m, int* results);
-	 void __fastcall IntToOct(int, char*);
-
+    void _fastcall CreateVectorB(unsigned int A[][M], int N, int M, int* B);
+    void __fastcall IntToOct(int, char*);
+    int __stdcall FindSaddlePoints(int matrix[][M], int N, int M, int* results);
+    int __fastcall IsMin(int matrix[][M], int m ,int v, int N, int M);
+    int __fastcall IsMax(int matrix[][M], int m, int v, int N, int M);
 }
-
 int main()
 {
-	int numb = 83;
-	char str[12];
-	str[11] = 0;
+    int matrix[N][M] = 
+    {
+        {3,0,7,0},
+        {0,3,9,4},
+        {4,0,7,0} 
+    };
 
-	IntToOct(numb, str);
-	std::cout << "IntToOct = " << str << '\n';
-	int a = 11219473485;
-	const int n = 3, m = 4;
-	unsigned int matrix[n][m] = {
-		{1,0,0,7},
-		{0,0,3,0},
-		{9,0,0,8},
+    int* B = new int[M];
+   /* for (int i = 0; i < M; i++)
+    {
+        int zero_count = 0;
+        for (int j = 0; j < N; j++)
+        {
+            if (matrix[j][i] == 0)
+                ++zero_count;
+        }
+        B[i] = zero_count;
+    }*/
+    _asm
+    {
+        mov eax, B
+        push eax
+        push M
 
-	};
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < m; j++)
-			std::cout << matrix[i][j] << " ";
-		std::cout << '\n';
-	}
-	int* B = new int[m];
-	for (int i = 0; i < m; i++)
-	{
-		int zero_count = 0;
-		for (int j = 0; j < n; j++)
-		{
-			if (matrix[j][i] == 0)
-				++zero_count;
-		}
-		B[i] = zero_count;
-	}
-	for (int i = 0; i < m; i++)
-		std::cout << B[i] << ' ';
-	std::cout << '\n';
-	int* V = new int[m];
-	_asm
-	{
-		mov ecx, matrix
-		xor ebx, ebx
-		mov eax, V
-		xor esi, esi;i
-		beg1:
-		cmp esi, m
-			jge end1
-			xor edx, edx
-			xor edi, edi;j
-				
-			beg2:
-					cmp edi,n
-						jge end2
-							push esi
-							push edi
-							imul edi,m
-							imul edi, 4	
-							imul esi, m
-							add edi, esi
-							mov ebx, matrix[edi]
-							cmp ebx, 0
-								jne jne1
-								inc edx
-							jne1:
-					pop edi
-					pop esi
-						inc edi
-						jmp beg2
-				end2:
-				mov [eax][esi * 4], edx
-				inc esi
-				jmp beg1
-			end1:
-				mov V, eax
-	}
-	for (int i = 0; i < m; i++)
-		std::cout << V[i] << ' ';
+        lea ecx, matrix    
+        mov edx, N             
+
+        call CreateVectorB
+
+        pop ebx
+        pop ebx
+    }
+
+    for (int i = 0; i < M; i++)
+        std::cout << '[' << B[i] << ']';
+    std::cout << '\n';
+    int number = 0x2A;
+    char str[12];
+    IntToOct(number, str);
+    std::cout << "IntToOct = " << str << '\n';
 }
